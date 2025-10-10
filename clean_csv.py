@@ -12,7 +12,7 @@ df = pd.read_csv(
 # print(df.head())
 # print(df.columns)
 print(df.info())
-
+# Toutes les valeurs sont non nulles
 
 # NETTOYAGE DU CSV
 
