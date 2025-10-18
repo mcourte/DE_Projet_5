@@ -1,23 +1,27 @@
-from clean_csv import clean_data
-import pandas as pd
+from clean_csv import clean_csv
 from transfer_mongodb import connect_mongo, insert_records_to_mongo
 
 
 def main():
     """
-    Fonction principale : nettoie le CSV, lit les données et les insère dans MongoDB.
+    Fonction principale :
+    - Nettoie le CSV et crée le CSV nettoyé si nécessaire
+    - Transforme les données pour MongoDB
+    - Insère les documents dans la collection MongoDB
     """
-    # Nettoyage du CSV et création si nécessaire
-    csv_path = clean_data("healthcare_dataset.csv")  # renvoie le chemin du CSV nettoyé
+    input_csv = "healthcare_dataset.csv"
+    output_csv = "healthcare_dataset_clean.csv"
 
-    # Lecture du CSV nettoyé
-    df = pd.read_csv(csv_path)
+    # Nettoyage du CSV et récupération du DataFrame nettoyé
+    df_clean = clean_csv(input_csv, output_csv)
 
     # Connexion à MongoDB
     collection = connect_mongo()
 
-    # Transformation + insertion
-    insert_records_to_mongo(df, collection)
+    # Transformation + insertion dans MongoDB
+    insert_records_to_mongo(df_clean, collection)
+
+    print(f"{len(df_clean)} documents insérés dans MongoDB.")
 
 
 if __name__ == "__main__":

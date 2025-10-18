@@ -31,8 +31,32 @@ def clean_insurance_billing(df: pd.DataFrame) -> pd.DataFrame:
 
 
 def remove_duplicates(df: pd.DataFrame) -> pd.DataFrame:
-    """Supprime les doublons dans le DataFrame"""
+    """
+    Supprime les doublons dans le DataFrame.
+    
+    Affiche le nombre de doublons trouvés et supprimés.
+    """
+    n_duplicates = df.duplicated().sum()
+    if n_duplicates > 0:
+        print(f"{n_duplicates} doublons trouvés et supprimés.")
+    else:
+        print("Aucun doublon trouvé.")
     df = df.drop_duplicates()
+    return df
+
+def check_empty_rows(df: pd.DataFrame) -> pd.DataFrame:
+    """
+    Vérifie la présence de lignes entièrement vides dans le DataFrame.
+    
+    Affiche le nombre de lignes vides.
+    Retourne le DataFrame sans ces lignes.
+    """
+    empty_rows = df.isnull().all(axis=1).sum()
+    if empty_rows > 0:
+        print(f"{empty_rows} lignes vides trouvées et supprimées.")
+        df = df.dropna(how="all")
+    else:
+        print("Aucune ligne vide trouvée.")
     return df
 
 
@@ -45,11 +69,12 @@ def clean_csv(file_path: str, output_path: str) -> pd.DataFrame:
     """Pipeline complet de nettoyage du CSV"""
     if not os.path.exists(file_path):
         raise FileNotFoundError(f"Le fichier {file_path} n'existe pas")
-    
+
     df = read_csv(file_path)
     df = standardize_column_names(df)
     df = clean_names(df)
     df = clean_insurance_billing(df)
     df = remove_duplicates(df)
+    df = check_empty_rows(df)
     save_csv(df, output_path)
     return df
