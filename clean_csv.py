@@ -1,66 +1,55 @@
 import pandas as pd
-
-# Lecture du csv
-
-
-df = pd.read_csv(
-    "healthcare_dataset.csv",
-    sep=",",  # séparateur entre colonnes
-    skipinitialspace=True,  # ignore les espaces après le séparateur
-)
-
-# print(df.head())
-# print(df.columns)
-print(df.info())
-# Toutes les valeurs sont non nulles
-
-# NETTOYAGE DU CSV
-
-# NAME
-
-# Uniformiser les noms de patients : Prénom Nom
-# # + supprime les espaces inutiles en début ou fin de chaine de caractères
-df['Name'] = df['Name'].str.title().str.strip()
-
-# On peut voir également que certains patients ont des Mrs, Mr ou Dr devant.
-# Il faut les supprimer pour plus de cohérence
-# Liste des préfixes à supprimer
-prefixes = ['Dr ', 'Mr ', 'Mrs ', 'Ms ']
-
-# Supprimer les préfixes
-for prefix in prefixes:
-    df['Name'] = df['Name'].str.replace(f'^{prefix}', '', regex=True, case=False)
-
-# regex : ^Dr : ça ne supprime le prefixe que si il est en début de chaine
-# case: false : insensible à la casse, supprime les prefixes qu'importe leur format DR, mRs ...
-
-# print(df['Name'].head())
+import os
 
 
-# DOCTOR
-
-# Uniformiser les noms des médecins
-df['Doctor'] = df['Doctor'].str.title().str.strip()
-
-# print(df['Doctor'].head())
+def read_csv(file_path: str) -> pd.DataFrame:
+    """Lit le CSV et retourne un DataFrame"""
+    return pd.read_csv(file_path, sep=",", skipinitialspace=True)
 
 
-# INSURANCE PROVIDER
-
-# Uniformiser les noms d'assurance en enlevant les ""
-df['Insurance Provider'] = df['Insurance Provider'].str.replace('"', '').str.strip()
-
-# print(df['Insurance Provider'].head())
+def standardize_column_names(df: pd.DataFrame) -> pd.DataFrame:
+    """Met les noms de colonnes en minuscules et remplace les espaces par des _"""
+    df.columns = df.columns.str.strip().str.lower().str.replace(' ', '_')
+    return df
 
 
-# BILLING AMOUNT
+def clean_names(df: pd.DataFrame) -> pd.DataFrame:
+    """Uniformise les noms de patients et médecins"""
+    prefixes = ['Dr ', 'Mr ', 'Mrs ', 'Ms ', 'Dr. ', 'Mr. ', 'Mrs. ', "Ms. "]
+    df['name'] = df['name'].str.title().str.strip()
+    for prefix in prefixes:
+        df['name'] = df['name'].str.replace(f'^{prefix}', '', regex=True, case=False)
+    df['doctor'] = df['doctor'].str.title().str.strip()
+    return df
 
-# Remplacer le point décimal par une virgule, et garder 2 chiffres après la virgule
-# .apply(lambda x: f"{x:.2f}") : applique à chaque valeur de la colonne un format à deux chiffres après la virgule
-df['Billing Amount'] = df['Billing Amount'].apply(lambda x: f"{x:.2f}".replace('.', ','))
+
+def clean_insurance_billing(df: pd.DataFrame) -> pd.DataFrame:
+    """Nettoie les colonnes assurance et montant"""
+    df['insurance_provider'] = df['insurance_provider'].str.replace('"', '').str.strip()
+    df['billing_amount'] = df['billing_amount'].apply(lambda x: f"{x:.2f}".replace('.', ','))
+    return df
 
 
-# print(df['Billing Amount'].head())
+def remove_duplicates(df: pd.DataFrame) -> pd.DataFrame:
+    """Supprime les doublons dans le DataFrame"""
+    df = df.drop_duplicates()
+    return df
 
 
-df.to_csv("healthcare_dataset_clean.csv", index=False, sep=",", encoding="utf-8")
+def save_csv(df: pd.DataFrame, file_path: str):
+    """Sauvegarde le DataFrame nettoyé en CSV"""
+    df.to_csv(file_path, index=False, sep=",", encoding="utf-8")
+
+
+def clean_csv(file_path: str, output_path: str) -> pd.DataFrame:
+    """Pipeline complet de nettoyage du CSV"""
+    if not os.path.exists(file_path):
+        raise FileNotFoundError(f"Le fichier {file_path} n'existe pas")
+    
+    df = read_csv(file_path)
+    df = standardize_column_names(df)
+    df = clean_names(df)
+    df = clean_insurance_billing(df)
+    df = remove_duplicates(df)
+    save_csv(df, output_path)
+    return df
