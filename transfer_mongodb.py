@@ -69,4 +69,3 @@ def insert_records_to_mongo(df, collection):
     """
     records = [format_patient_record(row) for _, row in df.iterrows()]
     collection.insert_many(records)
-    print(f"{len(records)} documents insérés")
