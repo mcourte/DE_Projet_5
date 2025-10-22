@@ -33,13 +33,13 @@ def format_patient_record(row):
     return {
         "patient": {
             "name": row["name"],
-            "age": row["age"],
             "gender": row["gender"],
             "blood_type": row["blood_type"],
-            "medical_condition": row["medical_condition"],
             "hospitalizations": [
                 {
                     "admission": {
+                        "age": row["age"],
+                        "medical_condition": row["medical_condition"],
                         "date": pd.to_datetime(row["date_of_admission"]),
                         "type": row["admission_type"],
                         "discharge_date": pd.to_datetime(row["discharge_date"]),
