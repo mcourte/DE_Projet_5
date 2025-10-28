@@ -3,8 +3,9 @@
 Cette branche contient le script principal ```main.py``` pour nettoyer le dataset médical, détecter et enregistrer les doublons, puis insérer les données dans MongoDB.
 
 ## Étape 1 : Se placer dans le dossier app
+```
 cd healthcare/app
-
+```
 ## Étape 2 : Connexion à MongoDB avec mongosh
 
 Avant de lancer le script, assurez-vous que MongoDB est démarré.
