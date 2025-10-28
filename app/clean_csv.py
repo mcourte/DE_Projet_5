@@ -32,33 +32,35 @@ def clean_insurance_billing(df: pd.DataFrame) -> pd.DataFrame:
 
 def remove_duplicates(df: pd.DataFrame) -> pd.DataFrame:
     """
-    Détecte, enregistre puis supprime les doublons du DataFrame.
+    Détecte et enregistre tous les doublons du DataFrame.
 
-    - Enregistre les doublons (originaux + copies) dans grouped_duplicates.csv.
-    - Supprime les doublons tout en gardant une seule occurrence de chaque ligne.
-    - Affiche le nombre total de doublons supprimés.
+    - Les doublons (originaux + copies) sont enregistrés dans grouped_duplicates.csv
+      avec l'original suivi immédiatement de ses copies.
+    - Supprime les doublons du DataFrame original en gardant le premier exemplaire.
     """
     output_path = "grouped_duplicates.csv"
 
-    # Trouver toutes les lignes impliquées dans des doublons (sans suppression)
-    duplicate_mask = df.duplicated(keep=False)
-    duplicates = df[duplicate_mask].copy()  #
+    # Clé temporaire pour identifier les doublons
+    df['_dup_key'] = df.apply(tuple, axis=1)
 
-    if duplicates.empty:
+    # Masque des doublons
+    duplicate_mask = df.duplicated(subset='_dup_key', keep=False)
+    if not duplicate_mask.any():
         print("Aucun doublon détecté.")
+        df = df.drop(columns='_dup_key')
         return df
 
-    # Sauvegarder les doublons avant suppression
-    duplicates["duplicate_group_id"] = duplicates.groupby(list(duplicates.columns)).ngroup()
-    duplicates.to_csv(output_path, index=False)
+    # Regrouper et ordonner les doublons
+    duplicates_ordered = pd.concat([df[df['_dup_key'] == key] 
+                                    for key in df.loc[duplicate_mask, '_dup_key'].unique()])
+    duplicates_ordered = duplicates_ordered.drop(columns='_dup_key')
+    duplicates_ordered.to_csv(output_path, index=False)
     print(f"Doublons enregistrés dans le fichier : {output_path}")
 
-    # Supprimer les doublons en gardant le premier
-    n_duplicates = df.duplicated().sum()
-    df = df.drop_duplicates()
-
-    print(f" {n_duplicates} doublon(s) supprimé(s).")
-    print(f" Taille du DataFrame après nettoyage : {len(df)} lignes.")
+    # Supprimer les doublons dans le DataFrame original
+    df = df.drop_duplicates(subset='_dup_key').drop(columns='_dup_key')
+    print(f"{len(duplicates_ordered)} doublon(s) supprimé(s).")
+    print(f"Taille du DataFrame après nettoyage : {len(df)} lignes.")
 
     return df
 
