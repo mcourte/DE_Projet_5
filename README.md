@@ -17,15 +17,68 @@ Avant de lancer le script, assurez-vous que MongoDB est démarré.
     - Mot de passe : Evaluateur123!
 
     - Base de données : healthcare_data
+ 
+1️ Linux
 
-1. Linux / MacOS  
-```mongosh -u evaluateur -p Evaluateur123! --authenticationDatabase healthcare_data```
+Démarrer MongoDB :  
+```
+sudo systemctl start mongod
+```
 
-2. Windows (PowerShell / cmd)    
-```mongosh -u evaluateur -p Evaluateur123! --authenticationDatabase healthcare_data```
+Vérifier que le service est actif :  
+```
+sudo systemctl status mongod
+```
+
+Se connecter à mongosh avec les identifiants :  
+
+```
+mongosh -u evaluateur -p Evaluateur123! --authenticationDatabase healthcare_data
+```
+
+2️ MacOS (Homebrew)
+
+Démarrer MongoDB :  
+
+```
+brew services start mongodb-community
+```
+
+
+Lancer le shell mongosh :  
+
+```
+mongosh -u evaluateur -p Evaluateur123! --authenticationDatabase healthcare_data
+```
+
+3️ Windows
+
+Démarrer MongoDB :  
+
+- Si installé en tant que service, il démarre automatiquement.  
+
+- Sinon, ouvrir PowerShell et lancer :  
+
+```
+"C:\Program Files\MongoDB\Server\7.0\bin\mongod.exe"
+```
+
+Dans un autre terminal (PowerShell ou cmd), lancer mongosh :
+
+```
+"C:\Program Files\MongoDB\Server\7.0\bin\mongosh.exe" -u evaluateur -p Evaluateur123! --authenticationDatabase healthcare_data
+```
 
 
 *Le paramètre --authenticationDatabase indique la base où l’utilisateur a été créé.*
+
+## Vérifier les utilisateurs et rôles
+
+Votre rôle d'evaluateur dispose du rôle userAdmin sur la base healthcare_data et vous pouvez la liste des  utilisateurs :  
+```
+use healthcare_data
+db.getUsers()
+```
 
 ## Étape 3 : Lancer le script principal
 ```
