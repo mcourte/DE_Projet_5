@@ -18,11 +18,11 @@ Avant de lancer le script, assurez-vous que MongoDB est démarré.
 
     - Base de données : healthcare_data
 
-1. Linux / MacOS
-mongosh -u evaluateur -p Evaluateur123! --authenticationDatabase healthcare_data
+1. Linux / MacOS  
+```mongosh -u evaluateur -p Evaluateur123! --authenticationDatabase healthcare_data```
 
-2. Windows (PowerShell / cmd)
-mongosh -u evaluateur -p Evaluateur123! --authenticationDatabase healthcare_data
+2. Windows (PowerShell / cmd)    
+```mongosh -u evaluateur -p Evaluateur123! --authenticationDatabase healthcare_data```
 
 
 *Le paramètre --authenticationDatabase indique la base où l’utilisateur a été créé.*
