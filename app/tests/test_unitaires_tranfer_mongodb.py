@@ -4,7 +4,7 @@ sys.path.append(os.path.dirname(os.path.dirname(__file__)))
 import pytest
 from unittest.mock import MagicMock, patch
 import pandas as pd
-from transfer_mongodb import format_patient_record, insert_records_to_mongo
+from app.transfer_mongodb import format_patient_record, insert_records_to_mongo
 
 @pytest.fixture
 def df_sample():
