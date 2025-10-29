@@ -2,6 +2,33 @@
 
 Cette branche contient le script principal ```main.py``` pour nettoyer le dataset médical, détecter et enregistrer les doublons, puis insérer les données dans MongoDB.
 
+##  Fonctionnement et utilité du programme
+
+Le dossier /app contient le cœur applicatif du projet.  
+Il regroupe les scripts Python responsables du nettoyage, de la préparation et du transfert des données vers la base MongoDB.  
+
+### Fonctionnement général
+
+Nettoyage des fichiers CSV
+Le script clean_csv.py supprime les doublons, ordonne les données et produit un fichier propre nommé grouped_duplicated.csv.  
+Ce fichier est généré à la racine du projet après exécution.  
+
+### Transfert vers MongoDB
+Le script transfer_mongodb.py se connecte à la base MongoDB (locale ou conteneurisée) pour importer les données nettoyées.
+La connexion est sécurisée grâce aux variables d’environnement (stockées dans .env, non versionné).  
+
+### Tests unitaires
+Le fichier test_unitaires.py permet de vérifier le bon fonctionnement des fonctions principales du projet (nettoyage et transfert).  
+
+### Utilité
+
+Automatiser la préparation des données avant leur intégration dans MongoDB.  
+
+Garantir la qualité et la cohérence des données.  
+
+Permettre un chargement reproductible et traçable des jeux de données dans un environnement maîtrisé.  
+
+
 ## Etape 1 : Télécharger le code
 
 Cliquer sur le bouton vert "<> Code" puis sur Download ZIP.  
