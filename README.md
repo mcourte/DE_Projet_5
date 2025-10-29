@@ -150,3 +150,29 @@ Le fichier grouped_duplicates.csv contient tous les doublons détectés, avec l�
 MongoDB doit être démarré avant d’exécuter le script.
 
 Utilisez les identifiants fournis pour accéder à la base et vérifier les données.
+
+## Information supplémentaires
+
+### Système d’authentification et rôles utilisateurs
+- Mécanisme d’authentification  
+
+MongoDB utilise un système d’authentification par utilisateur avec un hachage sécurisé SHA-256 pour protéger les mots de passe.  
+Lorsqu’un utilisateur est créé, MongoDB ne stocke pas le mot de passe en clair.  
+Il applique la formule suivante :  
+```
+hash = SHA256(password + salt)
+```
+
+L’empreinte ainsi générée est enregistrée dans la collection interne system.users.  
+Même avec un accès aux fichiers système, il est impossible de récupérer le mot de passe original.  
+
+-  Liste complète des rôles MongoDB
+
+| **Rôle** | **Description** | **Portée** |
+|-----------|------------------|-------------|
+| `read` | Lecture seule des collections | Base spécifique |
+| `readWrite` | Lecture et écriture des documents | Base spécifique |
+| `dbAdmin` | Administration de la base (index, statistiques, utilisateurs, etc.) | Base spécifique |
+| `userAdmin` | Gestion des utilisateurs et des rôles | Base spécifique |
+| `dbOwner` | Combine `readWrite`, `dbAdmin`, et `userAdmin` sur la même base | Base spécifique |
+| `root` | Accès total à toutes les bases et commandes | Global |
