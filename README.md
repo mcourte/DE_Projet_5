@@ -31,7 +31,7 @@ Pour les utilisateurs de Linux : ouvrez directement le terminal de commande
 Se placer dans le dossier où l'on a extrait l'ensemble des documents grâce à la commande ``cd``  
 Exemple :
 ```
-cd home/magali/OpenClassrooms/Formation/Projet_7
+cd home/magali/OpenClassrooms/Formation_DE/Projet_5
 ```
 
 
