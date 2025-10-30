@@ -65,6 +65,20 @@ def remove_duplicates(df: pd.DataFrame) -> pd.DataFrame:
 
     return df
 
+def check_empty_rows(df: pd.DataFrame) -> pd.DataFrame:
+    """
+    Vérifie la présence de lignes entièrement vides dans le DataFrame.
+
+    Affiche le nombre de lignes vides.
+    Retourne le DataFrame sans ces lignes.
+    """
+    empty_rows = df.isnull().all(axis=1).sum()
+    if empty_rows > 0:
+        print(f"{empty_rows} lignes vides trouvées et supprimées.")
+        df = df.dropna(how="all")
+    else:
+        print("Aucune ligne vide trouvée.")
+    return df
 
 def check_missing_values(df: pd.DataFrame) -> None:
     """
