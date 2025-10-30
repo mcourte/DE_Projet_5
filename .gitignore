@@ -1,5 +1,10 @@
+<<<<<<< HEAD
 /venv/
 venv/
 .env/
 docker/.env/
 /.env/
+=======
+/.pytest_cache
+/venv/
+>>>>>>> origin/main
