@@ -15,16 +15,14 @@ services:
       - "27017:27017"
 
   healthcare_app:
-    build:
-      context: .
-      dockerfile: docker/Dockerfile  
+    build: .
     container_name: healthcare_app
     depends_on:
       - mongo_db
+    env_file:
+      - ../.env
     environment:
       MONGO_URI: ${MONGO_URI}
-    ports:
-      - "8000:8000"   
     networks:
       - healthcare_net
 
@@ -33,4 +31,3 @@ volumes:
 
 networks:
   healthcare_net:
-
