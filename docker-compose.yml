@@ -1,5 +1,3 @@
-version: "3.9"
-
 services:
   mongo_db:
     image: mongo:6.0
@@ -9,25 +7,18 @@ services:
       MONGO_INITDB_ROOT_USERNAME: ${MONGO_ROOT_USER}
       MONGO_INITDB_ROOT_PASSWORD: ${MONGO_ROOT_PASSWORD}
       MONGO_INITDB_DATABASE: ${MONGO_DB}
-    volumes:
-      - mongo_data:/data/db
     ports:
       - "27017:27017"
+    volumes:
+      - mongo_data:/data/db
 
   healthcare_app:
-    build: .
+    build: ../
     container_name: healthcare_app
     depends_on:
       - mongo_db
-    env_file:
-      - ../.env
     environment:
       MONGO_URI: ${MONGO_URI}
-    networks:
-      - healthcare_net
 
 volumes:
   mongo_data:
-
-networks:
-  healthcare_net:
