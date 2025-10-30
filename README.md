@@ -65,10 +65,14 @@ Créer le fichier ```.env```
 
 Créer un fichier .env à la racine de docker ou du projet contenant les identifiants pour MongoDB :
 ```
-MONGO_USER=evaluateur
-MONGO_PASSWORD=evaluateur123!
+# MongoDB root
+MONGO_ROOT_USER=admin
+MONGO_ROOT_PASSWORD=Admin123!
 MONGO_DB=healthcare_data
-MONGO_PORT=27017
+
+# User pour l'évaluateur
+MONGO_URI=mongodb://evaluateur:Evaluateur123!@mongo_db:27017/healthcare_data?authSource=healthcare_data
+
 ```
 
 #### Connexion à MongoDB avec l’utilisateur evaluateur
