@@ -31,13 +31,13 @@ def clean_insurance_billing(df: pd.DataFrame) -> pd.DataFrame:
 
 def remove_duplicates(df: pd.DataFrame) -> pd.DataFrame:
     """
-    Détecte et enregistre tous les doublons du DataFrame.
+    Détecte, enregistre puis supprime les doublons du DataFrame.
 
-    - Les doublons (originaux + copies) sont enregistrés dans grouped_duplicates.csv
-      avec l'original suivi immédiatement de ses copies.
-    - Supprime les doublons du DataFrame original en gardant le premier exemplaire.
+    - Enregistre les doublons (originaux + copies) dans grouped_duplicates.csv.
+    - Supprime les doublons tout en gardant une seule occurrence de chaque ligne.
+    - Affiche le nombre total de doublons supprimés.
     """
-    output_path = "grouped_duplicates.csv"
+    output_path = "app/grouped_duplicates.csv"
 
     # Clé temporaire pour identifier les doublons
     df["_dup_key"] = df.apply(lambda row: tuple(row), axis=1)
@@ -81,6 +81,7 @@ def remove_duplicates(df: pd.DataFrame) -> pd.DataFrame:
     print(f"Taille du DataFrame après nettoyage : {len(df)} lignes.")
 
     return df
+
 
 
 def check_empty_rows(df: pd.DataFrame) -> pd.DataFrame:

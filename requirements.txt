@@ -2,33 +2,12 @@ annotated-doc==0.0.2
 annotated-types==0.7.0
 anyio==4.11.0
 certifi==2025.10.5
-<<<<<<< HEAD
-charset-normalizer==3.4.3
-click==8.3.0
-coverage==7.10.7
-dnspython==2.8.0
-fastapi==0.120.0
-h11==0.16.0
-idna==3.10
-iniconfig==2.3.0
-numpy==2.3.3
-packaging==25.0
-pandas==2.3.3
-pluggy==1.6.0
-pydantic==2.12.3
-pydantic_core==2.41.4
-Pygments==2.19.2
-=======
-cffi==2.0.0
 charset-normalizer==3.1.0
-click==8.1.8
-commonmark==0.9.1
+click
 coverage==7.10.7
 cryptography==43.0.3
 dnspython==2.8.0
 fastapi==0.120.0
-ggshield==1.44.1
-git-filter-repo==2.47.0
 h11==0.16.0
 idna==3.10
 iniconfig==2.3.0
@@ -42,12 +21,8 @@ pandas==2.3.3
 platformdirs==3.0.0
 pluggy==1.6.0
 pycparser==2.23
-pydantic==2.12.3
-pydantic_core==2.41.4
-pygitguardian==1.26.0
 Pygments==2.19.2
 PyJWT==2.6.0
->>>>>>> origin/main
 pymongo==4.15.3
 pytest==8.4.2
 pytest-cov==7.0.0
@@ -61,17 +36,10 @@ setuptools==80.9.0
 six==1.17.0
 sniffio==1.3.1
 starlette==0.48.0
-<<<<<<< HEAD
-typing-inspection==0.4.2
-typing_extensions==4.15.0
-tzdata==2025.2
-urllib3==2.5.0
-=======
-truststore==0.10.4
 typing-inspect==0.9.0
-typing-inspection==0.4.2
 typing_extensions==4.12.2
 tzdata==2025.2
 urllib3==2.2.3
->>>>>>> origin/main
+truststore==0.10.4
 uvicorn==0.38.0
+ggshield==1.44.1
