@@ -65,12 +65,10 @@ Créer le fichier ```.env```
 
 Créer un fichier .env à la racine de docker ou du projet contenant les identifiants pour MongoDB :
 ```
-# MongoDB root
-MONGO_ROOT_USER=admin
-MONGO_ROOT_PASSWORD=Admin123!
+MONGO_ROOT_USER=evaluateur
+MONGO_ROOT_PASSWORD=Evaluateur123!
 MONGO_DB=healthcare_data
 
-# User pour l'évaluateur
 MONGO_URI=mongodb://evaluateur:Evaluateur123!@mongo_db:27017/healthcare_data?authSource=healthcare_data
 
 ```
@@ -135,6 +133,47 @@ db.getUsers()
 
 
 ## Utilisation de Docker
+
+Avant de construire le docker, il est nécessaire de stopper MongoDB.  
+- Linux
+
+```
+# Vérifier l'état de MongoDB
+sudo systemctl status mongod
+
+# Stopper MongoDB
+sudo systemctl stop mongod
+
+# Pour redémarrer après Docker
+sudo systemctl start mongod
+```
+- Windows
+
+```
+# Ouvrir PowerShell en administrateur
+
+# Vérifier l'état du service
+Get-Service -Name MongoDB
+
+# Stopper MongoDB
+Stop-Service -Name MongoDB
+
+# Pour redémarrer après Docker
+Start-Service -Name MongoDB
+```
+
+- Mac
+
+```
+# Vérifier l'état
+brew services list
+
+# Stopper MongoDB
+brew services stop mongodb-community
+
+# Pour redémarrer après Docker
+brew services start mongodb-community
+```
 
 
 Construire et lancer les conteneurs :
