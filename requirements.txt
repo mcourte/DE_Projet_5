@@ -17,7 +17,6 @@ pluggy==1.6.0
 pydantic==2.12.3
 pydantic_core==2.41.4
 Pygments==2.19.2
-=======
 cffi==2.0.0
 charset-normalizer==3.1.0
 click==8.1.8
@@ -46,7 +45,6 @@ pydantic_core==2.41.4
 pygitguardian==1.26.0
 Pygments==2.19.2
 PyJWT==2.6.0
->>>>>>> origin/main
 pymongo==4.15.3
 pytest==8.4.2
 pytest-cov==7.0.0
