@@ -51,7 +51,7 @@ def remove_duplicates(df: pd.DataFrame) -> pd.DataFrame:
         return df
 
     # Regrouper et ordonner les doublons
-    duplicates_ordered = pd.concat([df[df['_dup_key'] == key] 
+    duplicates_ordered = pd.concat([df[df['_dup_key'] == key]
                                     for key in df.loc[duplicate_mask, '_dup_key'].unique()])
     duplicates_ordered = duplicates_ordered.drop(columns='_dup_key')
     duplicates_ordered.to_csv(output_path, index=False)
