@@ -1,243 +1,198 @@
-<<<<<<< HEAD
-# Branche healthcare/app 
+# Projet 5 – Migration des données médicales vers MongoDB
+## Description du projet
 
-Cette branche contient le script principal ```main.py``` pour nettoyer le dataset médical, détecter et enregistrer les doublons, puis insérer les données dans MongoDB.
+Ce projet a pour objectif de migrer un dataset médical de patients vers MongoDB, tout en proposant un système scalable, portable et sécurisé.
+Le projet est divisé en deux parties principales :
 
-##  Fonctionnement et utilité du programme
+healthcare/app : contient le code Python pour nettoyer les données CSV et les insérer dans MongoDB.
 
-Le dossier /app contient le cœur applicatif du projet.  
-Il regroupe les scripts Python responsables du nettoyage, de la préparation et du transfert des données vers la base MongoDB.  
+healthcare/docker : contient les fichiers Docker pour lancer MongoDB et l’application dans des conteneurs, facilitant le déploiement et la portabilité.
 
-### Fonctionnement général
+Le programme principal est main.py, qui automatise la pipeline complète :
 
-Nettoyage des fichiers CSV
-Le script clean_csv.py supprime les doublons, ordonne les données et produit un fichier propre nommé grouped_duplicated.csv.  
-Ce fichier est généré à la racine du projet après exécution.  
+- Nettoyage du CSV (suppression des doublons et valeurs manquantes)
 
-### Transfert vers MongoDB
-Le script transfer_mongodb.py se connecte à la base MongoDB (locale ou conteneurisée) pour importer les données nettoyées.
-La connexion est sécurisée grâce aux variables d’environnement (stockées dans .env, non versionné).  
+- Transformation des données pour MongoDB
 
-### Tests unitaires
-Le fichier test_unitaires.py permet de vérifier le bon fonctionnement des fonctions principales du projet (nettoyage et transfert).  
+- Insertion des documents dans MongoDB
 
-### Utilité
+## Etapes pour lancer le projet
 
-Automatiser la préparation des données avant leur intégration dans MongoDB.  
+### Etape 1 : Télécharger le code
 
-Garantir la qualité et la cohérence des données.  
+Cliquer sur le bouton vert <> Code puis sur Download ZIP.
 
-Permettre un chargement reproductible et traçable des jeux de données dans un environnement maîtrisé.  
+Extraire l'ensemble des fichiers dans le dossier où vous souhaitez stocker le projet et les datas.
 
-
-## Etape 1 : Télécharger le code
-
-Cliquer sur le bouton vert "<> Code" puis sur Download ZIP.  
-Extraire l'ensemble des éléments dans le dossier dans lequel vous voulez stockez les datas qui seront téléchargées.  
-
-## Etape 2 : Installer Python et ouvrir le terminal de commande
+## Etape 2 : Installer Python et ouvrir le terminal
 
 Télécharger [Python](https://www.python.org/downloads/) et [installer-le](https://fr.wikihow.com/installer-Python)  
 
-Ouvrir le terminal de commande :  
+Ouvrir le terminal de commande :
+
 Pour les utilisateurs de Windows : [démarche à suivre ](https://support.kaspersky.com/fr/common/windows/14637#block0)  
 Pour les utilisateurs de Mac OS : [démarche à suivre ](https://support.apple.com/fr-fr/guide/terminal/apd5265185d-f365-44cb-8b09-71a064a42125/mac)  
 Pour les utilisateurs de Linux : ouvrez directement le terminal de commande   
 
-## Etape 3 : Création de l'environnement virtuel
+## Etape 3 : Créer un environnement virtuel
 
-Se placer dans le dossier où l'on a extrait l'ensemble des documents grâce à la commande ``cd``  
-Exemple :
-```
-cd home/magali/OpenClassrooms/Formation_DE/Projet_5/app
-```
-
-
-Dans le terminal de commande, executer la commande suivante :
+### Créer l’environnement virtuel :
 ```
 python3 -m venv env
 ```
 
+#### Activer l’environnement :
 
-Activez l'environnement virtuel
+- Linux / Mac OS :
 ```
 source env/bin/activate
-```
-> Pour les utilisateurs de Windows, la commande est la suivante : 
-> ``` env\Scripts\activate.bat ```
+```  
 
-## Etape 4 : Télécharger les packages nécessaires au bon fonctionnement du programme
-
-Dans le terminal, taper la commande suivante :
-```
-pip install -r requierements.txt
-```
-
-## Étape 5 : Connexion à MongoDB avec mongosh
-
-Avant de lancer le script, assurez-vous que MongoDB est démarré.
-
-- Identifiants pour l’évaluateur
-
-    - Utilisateur : evaluateur
-
-    - Mot de passe : Evaluateur123!
-
-    - Base de données : healthcare_data
- 
-1️ Linux
-
-Démarrer MongoDB :  
-```
-sudo systemctl start mongod
-```
-
-Vérifier que le service est actif :  
-```
-sudo systemctl status mongod
-```
-
-Se connecter à mongosh avec les identifiants :  
+- Windows :
 
 ```
-mongosh -u evaluateur -p Evaluateur123! --authenticationDatabase healthcare_data
+env\Scripts\activate.bat
 ```
 
-2️ MacOS (Homebrew)
+### Etape 4 : Installer les dépendances
+```
+pip install -r requirements.txt
+```
 
-Démarrer MongoDB :  
+### Etape 5 : Connexion à MongoDB
+
+Créer le fichier ```.env```
+
+Créer un fichier .env à la racine de docker ou du projet contenant les identifiants pour MongoDB :
+```
+MONGO_USER=evaluateur
+MONGO_PASSWORD=evaluateur123!
+MONGO_DB=healthcare_data
+MONGO_PORT=27017
+```
+
+#### Connexion à MongoDB avec l’utilisateur evaluateur
+
+Commandes directes pour se connecter à MongoDB (mongosh) :
+
+- Linux / Mac OS :
+```
+mongosh "mongodb://evaluateur:evaluateur123!@localhost:27017/healthcare_data"
+```
+
+- Windows (PowerShell / CMD) :
 
 ```
-brew services start mongodb-community
+mongosh "mongodb://evaluateur:evaluateur123!@localhost:27017/healthcare_data"
 ```
 
 
-Lancer le shell mongosh :  
+### Etape 5 : Lancer le programme Python
 
-```
-mongosh -u evaluateur -p Evaluateur123! --authenticationDatabase healthcare_data
-```
+Dans le terminal, lancer la commande :
 
-3️ Windows
-
-Démarrer MongoDB :  
-
-- Si installé en tant que service, il démarre automatiquement.  
-
-- Sinon, ouvrir PowerShell et lancer :  
-
-```
-"C:\Program Files\MongoDB\Server\7.0\bin\mongod.exe"
-```
-
-Dans un autre terminal (PowerShell ou cmd), lancer mongosh :
-
-```
-"C:\Program Files\MongoDB\Server\7.0\bin\mongosh.exe" -u evaluateur -p Evaluateur123! --authenticationDatabase healthcare_data
-```
-
-
-*Le paramètre --authenticationDatabase indique la base où l’utilisateur a été créé.*
-
-## Vérifier les utilisateurs et rôles
-
-Votre rôle d'evaluateur dispose du rôle userAdmin sur la base healthcare_data et vous pouvez la liste des  utilisateurs :  
-```
-use healthcare_data
-db.getUsers()
-```
-
-## Étape 6 : Lancer le script principal
 ```
 python3 main.py
 ```
 
-Le script va :
+Le programme va nettoyer le CSV et générer un fichier grouped_duplicates.csv à la racine du projet  
 
-- Nettoyer le CSV healthcare_dataset.csv.
+Les données sont ensuite insérées dans MongoDB.  
 
-- Détecter et enregistrer les doublons dans grouped_duplicates.csv.
+#### Connexion à MongoDB
 
-- Insérer les données nettoyées dans la collection MongoDB.
+Vous pouvez vous connecter via mongosh avec les identifiants que vous avez insérés dans ```.env```.  
 
-## Étape 4 : Vérifier les données dans MongoDB
+#### Commandes pour se connecter :
 
-Après exécution :
+- Linux / Mac OS :
+```
+mongosh "mongodb://<USER>:<PASSWORD>@localhost:27017/healthcare_data"
+```
 
+- Windows :
+```
+mongosh "mongodb://<USER>:<PASSWORD>@localhost:27017/healthcare_data"
+```
+
+Vous pouvez les voir en utilisant les commandes suivantes :  
+
+- Vérification des données :
 ```
 use healthcare_data
 db.patients.find().limit(5).pretty()
 ```
 
-Vous verrez les premières lignes insérées.
-
-### Remarques importantes
-
-Le fichier grouped_duplicates.csv contient tous les doublons détectés, avec l’original suivi de ses copies.
-
-MongoDB doit être démarré avant d’exécuter le script.
-
-Utilisez les identifiants fournis pour accéder à la base et vérifier les données.
-
-## Information supplémentaires
-
-### Système d’authentification et rôles utilisateurs
-- Mécanisme d’authentification  
-
-MongoDB utilise un système d’authentification par utilisateur avec un hachage sécurisé SHA-256 pour protéger les mots de passe.  
-Lorsqu’un utilisateur est créé, MongoDB ne stocke pas le mot de passe en clair.  
-Il applique la formule suivante :  
+- Vérification des utilisateurs :
 ```
-hash = SHA256(password + salt)
+db.getUsers()
 ```
 
-L’empreinte ainsi générée est enregistrée dans la collection interne system.users.  
-Même avec un accès aux fichiers système, il est impossible de récupérer le mot de passe original.  
-
--  Liste complète des rôles MongoDB
-
-| **Rôle** | **Description** | **Portée** |
-|-----------|------------------|-------------|
-| `read` | Lecture seule des collections | Base spécifique |
-| `readWrite` | Lecture et écriture des documents | Base spécifique |
-| `dbAdmin` | Administration de la base (index, statistiques, utilisateurs, etc.) | Base spécifique |
-| `userAdmin` | Gestion des utilisateurs et des rôles | Base spécifique |
-| `dbOwner` | Combine `readWrite`, `dbAdmin`, et `userAdmin` sur la même base | Base spécifique |
-| `root` | Accès total à toutes les bases et commandes | Global |
-=======
-# Migrez des données médicales à l'aide du NoSQL
-
-## Contexte
-
-DataSoluTech, spécialiste des solutions de gestion et d’analyse de données, a reçu un dataset médical de patients d’un client. Ce dernier rencontre des problèmes de scalabilité pour gérer et exploiter ses données quotidiennes.
-
-La mission consiste à proposer une solution Big Data scalable horizontalement permettant :
-
-- une meilleure gestion des données,
-
-- une exploitation rapide et fiable pour l’analyse,
-
-- une portabilité et facilité de déploiement.
 
 
-
-## Branches du projet
-
-healthcare/app :
-
-- Contient la version complète du programme avec main.py.
-
-- Permet de lancer le script localement pour nettoyer et insérer les données.
-
-healthcare/docker :
-
-- Contient le Dockerfile et les configurations pour créer une image Docker complète.
-
-- L’image inclut MongoDB et le script de migration, ce qui permet :
-
-    - de déployer facilement la solution sur n’importe quelle machine,
-
-    - de rendre le système scalable et portable,
+## Utilisation de Docker
 
 
->>>>>>> origin/main
+Construire et lancer les conteneurs :
+
+```
+docker-compose up --build
+```
+
+Le conteneur MongoDB sera accessible sur le port 27017.   
+
+Le conteneur app exécutera automatiquement ```main.py```.  
+
+Les fichiers générés (grouped_duplicates.csv et healthcare_dataset_clean.csv) apparaissent dans app/  
+
+
+Vérification :
+```
+use healthcare_data
+db.patients.find().limit(5).pretty()
+``` 
+### Résumé du fonctionnement
+
+**Collecte** : Le CSV est lu depuis main.
+
+**Nettoyage** : Les doublons sont enregistrés dans grouped_duplicates.csv et supprimés du DataFrame.
+
+**Transformation** : Préparation des documents pour MongoDB.
+
+**Stockage** : Insertion sécurisée dans MongoDB avec authentification et rôles utilisateurs.
+
+**Docker** : Conteneurisation pour portabilité et déploiement.
+
+## Système d’authentification et rôles utilisateurs
+
+Le projet met en place un système d’authentification sécurisé pour accéder à MongoDB et gérer les données des patients.  
+
+### Authentification
+
+Chaque utilisateur MongoDB possède un nom d’utilisateur et un mot de passe.
+
+Les mots de passe sont hachés avec l’algorithme SHA-256 pour assurer la sécurité.
+
+L’accès à la base de données nécessite de s’authentifier avant toute opération (lecture ou écriture).
+
+### Rôles utilisateurs
+
+Les utilisateurs ont des rôles définis pour limiter leurs permissions. Voici les rôles possibles utilisés dans le projet :  
+
+| Rôle      | Description                                                     | Portée           |
+|-----------|-----------------------------------------------------------------|-----------------|
+| read      | Lecture seule des collections                                    | Base spécifique |
+| readWrite | Lecture et écriture des documents                                | Base spécifique |
+| dbAdmin   | Administration de la base (index, statistiques, utilisateurs, etc.) | Base spécifique |
+| userAdmin | Gestion des utilisateurs et des rôles                            | Base spécifique |
+| dbOwner   | Combine readWrite, dbAdmin et userAdmin sur la même base         | Base spécifique |
+| root      | Accès total à toutes les bases et commandes                     | Global          |
+
+
+**Pour permettre à l’évaluateur de vérifier les données et les utilisateurs, l’utilisateur evaluateur est configuré avec le rôle dbAdmin sur la base healthcare_data.**
+
+
+### Branches Git et utilité
+Branche	Contenu	Utilité
+- healthcare/app	Code Python (main.py, clean_csv.py, transfer_mongodb.py), dataset	Développement et exécution du pipeline de données
+- healthcare/docker	Dockerfile, docker-compose.yml, .env.sample	Conteneurisation de MongoDB et de l’application pour portabilité et déploiement
