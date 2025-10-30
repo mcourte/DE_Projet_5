@@ -38,7 +38,7 @@ def remove_duplicates(df: pd.DataFrame) -> pd.DataFrame:
       avec l'original suivi immédiatement de ses copies.
     - Supprime les doublons du DataFrame original en gardant le premier exemplaire.
     """
-    output_path = "grouped_duplicates.csv"
+    output_path = "app/grouped_duplicates.csv"
 
     # Clé temporaire pour identifier les doublons
     df['_dup_key'] = df.apply(tuple, axis=1)
