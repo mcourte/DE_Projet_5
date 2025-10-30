@@ -1,39 +1,36 @@
-version: "3.9"  
+version: "3.9"
 
 services:
-  # Service MongoDB
   mongo_db:
-    image: mongo:6.0 
-    container_name: mongo_db  
-    restart: unless-stopped  # Redémarre automatiquement sauf si on l'arrête manuellement
+    image: mongo:6.0
+    container_name: mongo_db
+    restart: unless-stopped
     environment:
-      # Variables d'environnement pour initialiser MongoDB
-      MONGO_INITDB_ROOT_USERNAME: admin        # Nom d'utilisateur root pour Mongo
-      MONGO_INITDB_ROOT_PASSWORD: Admin123!   # Mot de passe root
-      MONGO_INITDB_DATABASE: healthcare_data  # Base de données créée par défaut à l'initialisation
+      MONGO_INITDB_ROOT_USERNAME: ${MONGO_ROOT_USER}
+      MONGO_INITDB_ROOT_PASSWORD: ${MONGO_ROOT_PASSWORD}
+      MONGO_INITDB_DATABASE: ${MONGO_DB}
     volumes:
-      - mongo_data:/data/db                  # 
-      - ./docker/mongo-init:/docker-entrypoint-initdb.d  # Scripts d'initialisation (ex: création collections)
+      - mongo_data:/data/db
     ports:
-      - "27017:27017" 
+      - "27017:27017"
 
-  # Service de l'application Python
   healthcare_app:
-    build: .  # Construit l'image Docker à partir du Dockerfile situé dans le dossier courant
-    container_name: healthcare_app  
+    build:
+      context: .
+      dockerfile: docker/Dockerfile  
+    container_name: healthcare_app
     depends_on:
-      - mongo_db  # Attend que le service MongoDB soit démarré avant de lancer l'app
+      - mongo_db
     environment:
-      # URI de connexion à MongoDB avec authentification
-      MONGO_URI: "mongodb://evaluateur:Evaluateur123!@mongo_db:27017/healthcare_data?authSource=healthcare_data"
+      MONGO_URI: ${MONGO_URI}
+    ports:
+      - "8000:8000"   
     networks:
-      - healthcare_net  # Connecte l'app au même réseau Docker que MongoDB pour qu'ils puissent communiquer
+      - healthcare_net
 
-# Définition des volumes Docker
 volumes:
-  mongo_data:  # Volume persistant pour les données MongoDB afin de ne pas les perdre à l'arrêt du container
+  mongo_data:
 
-# Définition des réseaux Docker
 networks:
-  healthcare_net:  # Réseau dédié pour que les services puissent communiquer entre eux
+  healthcare_net:
 
