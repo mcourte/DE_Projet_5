@@ -1,241 +1,103 @@
-# Projet 5 – Migration des données médicales vers MongoDB
-## Description du projet
+# main.py – Script principal de migration des données
+## Objectif
 
-Ce projet a pour objectif de migrer un dataset médical de patients vers MongoDB, tout en proposant un système scalable, portable et sécurisé.
-Le projet est divisé en deux parties principales :
+Le fichier ```main.py``` orchestre l’ensemble du processus de migration des données médicales depuis un fichier CSV vers une base MongoDB.  
+Il constitue le cœur de la pipeline et exécute automatiquement toutes les étapes :  
+lecture, nettoyage, transformation et insertion des données.  
 
-healthcare/app : contient le code Python pour nettoyer les données CSV et les insérer dans MongoDB.
+### Étapes principales du script
 
-healthcare/docker : contient les fichiers Docker pour lancer MongoDB et l’application dans des conteneurs, facilitant le déploiement et la portabilité.
+- Chargement du dataset
 
-Le programme principal est main.py, qui automatise la pipeline complète :
+Le script lit le fichier healthcare_dataset.csv présent dans le dossier app/.
 
-- Nettoyage du CSV (suppression des doublons et valeurs manquantes)
+Les données sont chargées dans un DataFrame Pandas pour faciliter le traitement.
 
-- Transformation des données pour MongoDB
+- Nettoyage des données
 
-- Insertion des documents dans MongoDB
+Suppression des doublons.
 
-## Etapes pour lancer le projet
+Détection des doublons enregistrée dans grouped_duplicates.csv.
 
-### Etape 1 : Télécharger le code
+Suppression des lignes contenant des valeurs manquantes critiques.
 
-Cliquer sur le bouton vert <> Code puis sur Download ZIP.
+Normalisation des types de données (dates, entiers, chaînes...).
 
-Extraire l'ensemble des fichiers dans le dossier où vous souhaitez stocker le projet et les datas.
+- Transformation
 
-## Etape 2 : Installer Python et ouvrir le terminal
+Conversion des données nettoyées au format compatible avec MongoDB (documents JSON).
 
-Télécharger [Python](https://www.python.org/downloads/) et [installer-le](https://fr.wikihow.com/installer-Python)  
+Harmonisation des clés (noms de colonnes, formats).
 
-Ouvrir le terminal de commande :
+- Connexion sécurisée à MongoDB
 
-Pour les utilisateurs de Windows : [démarche à suivre ](https://support.kaspersky.com/fr/common/windows/14637#block0)  
-Pour les utilisateurs de Mac OS : [démarche à suivre ](https://support.apple.com/fr-fr/guide/terminal/apd5265185d-f365-44cb-8b09-71a064a42125/mac)  
-Pour les utilisateurs de Linux : ouvrez directement le terminal de commande   
-
-## Etape 3 : Créer un environnement virtuel
-
-### Créer l’environnement virtuel :
+Connexion via l’URI stocké dans le fichier .env :
 ```
-python3 -m venv env
-```
-
-#### Activer l’environnement :
-
-- Linux / Mac OS :
-```
-source env/bin/activate
-```  
-
-- Windows :
-
-```
-env\Scripts\activate.bat
-```
-
-### Etape 4 : Installer les dépendances
-```
-pip install -r requirements.txt
-```
-
-### Etape 5 : Connexion à MongoDB
-
-Créer le fichier ```.env```
-
-Créer un fichier .env à la racine de docker ou du projet contenant les identifiants pour MongoDB :
-```
-MONGO_ROOT_USER=evaluateur
-MONGO_ROOT_PASSWORD=Evaluateur123!
-MONGO_DB=healthcare_data
-
 MONGO_URI=mongodb://evaluateur:Evaluateur123!@mongo_db:27017/healthcare_data?authSource=healthcare_data
-
 ```
 
-#### Connexion à MongoDB avec l’utilisateur evaluateur
+- Authentification avec l’utilisateur défini (evaluateur).
 
-Commandes directes pour se connecter à MongoDB (mongosh) :
+Insertion dans MongoDB
 
-- Linux / Mac OS :
-```
-mongosh "mongodb://evaluateur:evaluateur123!@localhost:27017/healthcare_data"
-```
+Les documents sont insérés dans la collection patients.
 
-- Windows (PowerShell / CMD) :
+Si la collection existe déjà, seules les nouvelles données sont ajoutées.
 
-```
-mongosh "mongodb://evaluateur:evaluateur123!@localhost:27017/healthcare_data"
-```
+- Journalisation
 
+Chaque étape affiche des messages dans la console (succès, erreurs, nombre de lignes insérées, etc.).
 
-### Etape 5 : Lancer le programme Python
+Cela permet de suivre l’évolution de la migration.
 
-Dans le terminal, lancer la commande :
+- Génération de fichiers de sortie
 
+  - grouped_duplicates.csv : contient les doublons détectés.
+
+  - healthcare_dataset_clean.csv : dataset final prêt à être analysé.
+
+### Structure du code
+
+Le script s’appuie sur deux modules internes :
+
+#### Module	Description
+- clean_csv.py	Fonctions de nettoyage et de validation du CSV
+- transfer_mongodb.py	Fonctions de connexion et d’insertion dans MongoDB
+*Exemple d’exécution*
+
+Dans le terminal (dans le conteneur ou en local) :  
 ```
 python3 main.py
 ```
 
-Le programme va nettoyer le CSV et générer un fichier grouped_duplicates.csv à la racine du projet  
+**Sortie attendue :**
 
-Les données sont ensuite insérées dans MongoDB.  
+[INFO] Lecture du fichier CSV...
+[INFO] Nettoyage des doublons...
+[INFO] Transformation pour MongoDB...
+[INFO] Connexion à MongoDB établie.
+[INFO] Insertion de 23500 documents terminée.
+[INFO] Migration réussie !
 
-#### Connexion à MongoDB
+## Résumé du fonctionnement
+#### Étapes du projet
 
-Vous pouvez vous connecter via mongosh avec les identifiants que vous avez insérés dans ```.env```.  
+| Étape | Fichier concerné       | Action principale                                      |
+|-------|-----------------------|--------------------------------------------------------|
+| 1     | `main.py`             | Lance toute la pipeline                                |
+| 2     | `clean_csv.py`        | Nettoie et prépare les données                        |
+| 3     | `transfer_mongodb.py` | Connecte et insère les données dans MongoDB           |
 
-#### Commandes pour se connecter :
+---
 
-- Linux / Mac OS :
-```
-mongosh "mongodb://<USER>:<PASSWORD>@localhost:27017/healthcare_data"
-```
+#### Sorties générées
 
-- Windows :
-```
-mongosh "mongodb://<USER>:<PASSWORD>@localhost:27017/healthcare_data"
-```
+| Fichier                        | Description                                      |
+|--------------------------------|--------------------------------------------------|
+| `grouped_duplicates.csv`        | Liste des doublons détectés                       |
+| `healthcare_dataset_clean.csv`  | Données nettoyées prêtes à l’analyse             |
 
-Vous pouvez les voir en utilisant les commandes suivantes :  
+## Conclusion
 
-- Vérification des données :
-```
-use healthcare_data
-db.patients.find().limit(5).pretty()
-```
-
-- Vérification des utilisateurs :
-```
-db.getUsers()
-```
-
-
-
-## Utilisation de Docker
-
-Avant de construire le docker, il est nécessaire de stopper MongoDB.  
-- Linux
-
-```
-# Vérifier l'état de MongoDB
-sudo systemctl status mongod
-
-# Stopper MongoDB
-sudo systemctl stop mongod
-
-# Pour redémarrer après Docker
-sudo systemctl start mongod
-```
-- Windows
-
-```
-# Ouvrir PowerShell en administrateur
-
-# Vérifier l'état du service
-Get-Service -Name MongoDB
-
-# Stopper MongoDB
-Stop-Service -Name MongoDB
-
-# Pour redémarrer après Docker
-Start-Service -Name MongoDB
-```
-
-- Mac
-
-```
-# Vérifier l'état
-brew services list
-
-# Stopper MongoDB
-brew services stop mongodb-community
-
-# Pour redémarrer après Docker
-brew services start mongodb-community
-```
-
-
-Construire et lancer les conteneurs :
-
-```
-docker-compose up --build
-```
-
-Le conteneur MongoDB sera accessible sur le port 27017.   
-
-Le conteneur app exécutera automatiquement ```main.py```.  
-
-Les fichiers générés (grouped_duplicates.csv et healthcare_dataset_clean.csv) apparaissent dans app/  
-
-
-Vérification :
-```
-use healthcare_data
-db.patients.find().limit(5).pretty()
-``` 
-### Résumé du fonctionnement
-
-**Collecte** : Le CSV est lu depuis main.
-
-**Nettoyage** : Les doublons sont enregistrés dans grouped_duplicates.csv et supprimés du DataFrame.
-
-**Transformation** : Préparation des documents pour MongoDB.
-
-**Stockage** : Insertion sécurisée dans MongoDB avec authentification et rôles utilisateurs.
-
-**Docker** : Conteneurisation pour portabilité et déploiement.
-
-## Système d’authentification et rôles utilisateurs
-
-Le projet met en place un système d’authentification sécurisé pour accéder à MongoDB et gérer les données des patients.  
-
-### Authentification
-
-Chaque utilisateur MongoDB possède un nom d’utilisateur et un mot de passe.
-
-Les mots de passe sont hachés avec l’algorithme SHA-256 pour assurer la sécurité.
-
-L’accès à la base de données nécessite de s’authentifier avant toute opération (lecture ou écriture).
-
-### Rôles utilisateurs
-
-Les utilisateurs ont des rôles définis pour limiter leurs permissions. Voici les rôles possibles utilisés dans le projet :  
-
-| Rôle      | Description                                                     | Portée           |
-|-----------|-----------------------------------------------------------------|-----------------|
-| read      | Lecture seule des collections                                    | Base spécifique |
-| readWrite | Lecture et écriture des documents                                | Base spécifique |
-| dbAdmin   | Administration de la base (index, statistiques, utilisateurs, etc.) | Base spécifique |
-| userAdmin | Gestion des utilisateurs et des rôles                            | Base spécifique |
-| dbOwner   | Combine readWrite, dbAdmin et userAdmin sur la même base         | Base spécifique |
-| root      | Accès total à toutes les bases et commandes                     | Global          |
-
-
-**Pour permettre à l’évaluateur de vérifier les données et les utilisateurs, l’utilisateur evaluateur est configuré avec le rôle dbAdmin sur la base healthcare_data.**
-
-
-### Branches Git et utilité
-Branche	Contenu	Utilité
-- healthcare/app	Code Python (main.py, clean_csv.py, transfer_mongodb.py), dataset	Développement et exécution du pipeline de données
-- healthcare/docker	Dockerfile, docker-compose.yml, .env.sample	Conteneurisation de MongoDB et de l’application pour portabilité et déploiement
+main.py est le point d’entrée du projet.
+Il assure une migration automatisée, traçable et sécurisée des données médicales vers MongoDB, sans intervention manuelle.
