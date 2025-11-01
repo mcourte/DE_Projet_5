@@ -1,0 +1,28 @@
+
+services:
+  mongo_db:
+    image: mongo:6.0
+    container_name: mongo_db
+    restart: always
+    ports:
+      - "27017:27017"
+    environment:
+      MONGO_INITDB_ROOT_USERNAME: ${MONGO_ROOT_USER}
+      MONGO_INITDB_ROOT_PASSWORD: ${MONGO_ROOT_PASSWORD}
+      MONGO_INITDB_DATABASE: ${MONGO_DB}
+    volumes:
+      - mongo_data:/data/db
+
+  healthcare_app:
+    build:
+      context: ./DE_Projet_5-main
+      dockerfile: Dockerfile
+    container_name: healthcare_app
+    depends_on:
+      - mongo_db
+    environment:
+      MONGO_URI: ${MONGO_URI}
+    command: ["python3", "app/main.py"]
+
+volumes:
+  mongo_data:
