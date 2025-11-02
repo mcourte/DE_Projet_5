@@ -188,17 +188,12 @@ Les conteneurs suivants seront créés :
 - healthcare_app : application Python exécutant automatiquement main.py
 
 ## Étape 7 : Connexion à MongoDB
-Depuis un terminal :
+Depuis un autre terminal terminal :
 
-- Linux / Mac OS
 ```
-mongosh "mongodb://evaluateur:Evaluateur123!@localhost:27017/healthcare_data"
+docker exec -it mongo_db mongosh -u evaluateur -p Evaluateur123!
 ```
 
-- Windows
-```
-mongosh "mongodb://evaluateur:Evaluateur123!@localhost:27017/healthcare_data"
-```
 
 - Vérifications :
 ```
