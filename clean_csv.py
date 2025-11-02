@@ -39,31 +39,44 @@ def remove_duplicates(df: pd.DataFrame) -> pd.DataFrame:
       avec l'original suivi immédiatement de ses copies.
     - Supprime les doublons du DataFrame original en gardant le premier exemplaire.
     """
-    output_path = "grouped_duplicates.csv"
+    output_path = "app/grouped_duplicates.csv"
 
     # Clé temporaire pour identifier les doublons
     df['_dup_key'] = df.apply(tuple, axis=1)
 
     # Masque des doublons
     duplicate_mask = df.duplicated(subset='_dup_key', keep=False)
+
+    # 🟢 Aucun doublon trouvé → on nettoie la clé temporaire et on continue
     if not duplicate_mask.any():
-        print("Aucun doublon détecté.")
+        print("✅ Aucun doublon détecté.")
         df = df.drop(columns='_dup_key')
         return df
 
-    # Regrouper et ordonner les doublons
-    duplicates_ordered = pd.concat([df[df['_dup_key'] == key] 
-                                    for key in df.loc[duplicate_mask, '_dup_key'].unique()])
-    duplicates_ordered = duplicates_ordered.drop(columns='_dup_key')
-    duplicates_ordered.to_csv(output_path, index=False)
-    print(f"Doublons enregistrés dans le fichier : {output_path}")
+    # 🔵 Doublons détectés → regrouper et sauvegarder
+    ordered_duplicates = [
+        df[df['_dup_key'] == key] for key in df.loc[duplicate_mask, '_dup_key'].unique()
+    ]
+
+    # Sécurité : vérifier qu'il y a bien des groupes avant concaténation
+    if ordered_duplicates:
+        duplicates_ordered = pd.concat(ordered_duplicates)
+        duplicates_ordered = duplicates_ordered.drop(columns='_dup_key')
+        duplicates_ordered.to_csv(output_path, index=False)
+        print(f"💾 Doublons enregistrés dans le fichier : {output_path}")
+        print(f"{len(duplicates_ordered)} doublon(s) supprimé(s).")
+    else:
+        duplicates_ordered = pd.DataFrame()
+        print("⚠️ Aucun groupe de doublons à enregistrer.")
 
     # Supprimer les doublons dans le DataFrame original
     df = df.drop_duplicates(subset='_dup_key').drop(columns='_dup_key')
-    print(f"{len(duplicates_ordered)} doublon(s) supprimé(s).")
-    print(f"Taille du DataFrame après nettoyage : {len(df)} lignes.")
+    print(f"📉 Taille du DataFrame après nettoyage : {len(df)} lignes.")
 
     return df
+
+
+
 
 def check_empty_rows(df: pd.DataFrame) -> pd.DataFrame:
     """
