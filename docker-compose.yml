@@ -33,3 +33,4 @@ services:
 #  Volumes persistants
 volumes:
   mongo_data:
+  csv_data:   
