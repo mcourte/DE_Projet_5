@@ -19,8 +19,8 @@ services:
   healthcare_app:
     build:
       #  Adapter ce chemin selon le dossier où se trouve ton projet
-      context: ./DE_Projet_5-main  
-      dockerfile: Dockerfile
+        context: .               
+        dockerfile: docker/Dockerfile  
     container_name: healthcare_app
     depends_on:
       - mongo_db
