@@ -17,7 +17,7 @@ services:
   #  Service de l'application Python
   healthcare_app:
     build:
-      #  Adapter ce chemin selon le dossier où se trouve ton projet
+      #  Adapter ce chemin selon le dossier où se trouve le projet
         context: .               
         dockerfile: docker/Dockerfile  
     container_name: healthcare_app
