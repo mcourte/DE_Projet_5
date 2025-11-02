@@ -1,5 +1,7 @@
+version: "3.9"
 
 services:
+  #  Service MongoDB
   mongo_db:
     image: mongo:6.0
     container_name: mongo_db
@@ -11,18 +13,24 @@ services:
       MONGO_INITDB_ROOT_PASSWORD: ${MONGO_ROOT_PASSWORD}
       MONGO_INITDB_DATABASE: ${MONGO_DB}
     volumes:
-      - mongo_data:/data/db
+      - mongo_data:/data/db  # Volume persistant pour MongoDB
 
+  #  Service de l'application Python
   healthcare_app:
     build:
-      context: ./DE_Projet_5-main
+      #  Adapter ce chemin selon le dossier où se trouve ton projet
+      context: ./DE_Projet_5-main  
       dockerfile: Dockerfile
     container_name: healthcare_app
     depends_on:
       - mongo_db
     environment:
       MONGO_URI: ${MONGO_URI}
+    # Montage du dossier app pour que les fichiers sortants soient visibles localement
+    volumes:
+      - ./app:/app/app
     command: ["python3", "app/main.py"]
 
+#  Volumes persistants
 volumes:
   mongo_data:
