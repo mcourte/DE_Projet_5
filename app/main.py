@@ -10,7 +10,7 @@ def main():
     - Insère les documents dans la collection MongoDB
     """
     input_csv = "app/healthcare_dataset.csv"
-    output_csv = "app/healthcare_dataset_clean.csv"
+    output_csv = "data/healthcare_dataset_clean.csv"
 
     # Nettoyage du CSV et récupération du DataFrame nettoyé
     df_clean = clean_csv(input_csv, output_csv)
