@@ -91,7 +91,7 @@ mongosh "mongodb://evaluateur:evaluateur123!@localhost:27017/healthcare_data"
 
 ### Etape 5 : Lancer le programme Python
 
-Dans le terminal, lancer la commande :
+Dans le terminal, dans le dossier app/, lancer la commande :  
 
 ```
 python3 main.py
