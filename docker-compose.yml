@@ -27,7 +27,7 @@ services:
       MONGO_URI: ${MONGO_URI}
     # Montage du dossier app pour que les fichiers sortants soient visibles localement
     volumes:
-      - ./app:/app/app
+      - ./app:/app/data
     command: ["python3", "app/main.py"]
 
 #  Volumes persistants
