@@ -13,7 +13,7 @@ services:
       MONGO_INITDB_DATABASE: ${MONGO_DB}
     volumes:
       - mongo_data:/data/db  # Volume persistant pour MongoDB
-
+      - ./docker/mongo-init.js:/docker-entrypoint-initdb.d/mongo-init.js:ro
   #  Service de l'application Python
   healthcare_app:
     build:
