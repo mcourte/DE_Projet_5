@@ -125,13 +125,6 @@ use healthcare_data
 db.patients.find().limit(5).pretty()
 ```
 
-- Vérification des utilisateurs :
-```
-db.getUsers()
-```
-
-
-
 ## Etape 7: Utilisation de Docker
 
 Avant de construire le docker, il est nécessaire de stopper MongoDB.  
