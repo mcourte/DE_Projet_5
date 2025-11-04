@@ -337,4 +337,4 @@ Les utilisateurs ont des rôles définis pour limiter leurs permissions. Voici l
 ### Branches Git et utilité
 Branche	Contenu	Utilité
 - healthcare/app	Code Python (main.py, clean_csv.py, transfer_mongodb.py), dataset	Développement et exécution du pipeline de données
-- healthcare/docker	Dockerfile, docker-compose.yml, .env.sample	Conteneurisation de MongoDB et de l’application pour portabilité et déploiement
+- healthcare/docker	Dockerfile
