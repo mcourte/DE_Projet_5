@@ -192,7 +192,6 @@ docker exec -it mongo_db mongosh -u evaluateur -p Evaluateur123!
 ```
 use healthcare_data
 db.patients.find().limit(5).pretty()
-db.getUsers()
 ```
 
 
