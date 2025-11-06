@@ -9,7 +9,7 @@ def main():
     - Transforme les données pour MongoDB
     - Insère les documents dans la collection MongoDB
     """
-    input_csv = "app/healthcare_dataset.csv"
+    input_csv = "healthcare_dataset.csv"
     output_csv = "data/healthcare_dataset_clean.csv"
 
     # Nettoyage du CSV et récupération du DataFrame nettoyé
