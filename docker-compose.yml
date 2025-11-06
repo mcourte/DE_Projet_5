@@ -22,11 +22,11 @@ services:
       - mongo_db
     environment:
       MONGO_URI: ${MONGO_URI}
-    command: ["python3", "app/main.py"]
+    command: ["python3", "main.py"]
     volumes:
       - ./app:/app
-      - csv_data:/app/csv_output   # volume pour les CSV nettoyés et doublons
+      - csv_data:/app/csv_output   
 
 volumes:
-  mongo_data:       # volume persistant pour MongoDB
-  csv_data:         # volume persistant pour les fichiers CSV
+  mongo_data:       
+  csv_data:         
