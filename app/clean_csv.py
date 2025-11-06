@@ -37,7 +37,7 @@ def remove_duplicates(df: pd.DataFrame) -> pd.DataFrame:
     - Supprime les doublons tout en gardant une seule occurrence de chaque ligne.
     - Affiche uniquement le nombre de lignes originales impliquées dans des doublons.
     """
-    output_path = "data/grouped_duplicates.csv"
+    output_path = "grouped_duplicates.csv"
 
     #  Étape 1 : créer une clé unique pour chaque ligne
     df["_dup_key"] = df.apply(lambda row: tuple(row), axis=1)
