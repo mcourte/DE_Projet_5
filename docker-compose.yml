@@ -1,6 +1,5 @@
-
 services:
-  #  Service MongoDB
+  # Service MongoDB
   mongo_db:
     image: mongo:6.0
     container_name: mongo_db
@@ -12,25 +11,22 @@ services:
       MONGO_INITDB_ROOT_PASSWORD: ${MONGO_ROOT_PASSWORD}
       MONGO_INITDB_DATABASE: ${MONGO_DB}
     volumes:
-      - mongo_data:/data/db  # Volume persistant pour MongoDB
-      - ./docker/mongo-init.js:/docker-entrypoint-initdb.d/mongo-init.js:ro
-  #  Service de l'application Python
+      - mongo_data:/data/db           # volume pour stocker les données MongoDB
+      - ./app:/app                    # volume optionnel pour voir les fichiers d’import dans l’app
+
+  # 🧠 Application Python
   healthcare_app:
     build:
-      #  Adapter ce chemin selon le dossier où se trouve le projet
-        context: .               
-        dockerfile: docker/Dockerfile  
+      context: .
+      dockerfile: docker/Dockerfile
     container_name: healthcare_app
     depends_on:
       - mongo_db
     environment:
       MONGO_URI: ${MONGO_URI}
-    # Montage du dossier app pour que les fichiers sortants soient visibles localement
-    volumes:
-      - ./app:/app/data
     command: ["python3", "app/main.py"]
+    volumes:
+      - ./app:/app                  
 
-#  Volumes persistants
 volumes:
   mongo_data:
-  csv_data:   
