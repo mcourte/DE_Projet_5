@@ -128,59 +128,65 @@ db.patients.find().limit(5).pretty()
 ## Etape 7: Utilisation de Docker
 
 Avant de construire le docker, il est nécessaire de stopper MongoDB.  
-- Linux
+#### Linux
 
+- Vérifier l'état de MongoDB
 ```
-# Vérifier l'état de MongoDB
 sudo systemctl status mongod
-
-# Stopper MongoDB
+```
+- Stopper MongoDB
+```
 sudo systemctl stop mongod
-
-# Pour redémarrer après Docker
+```
+- Pour redémarrer après Docker
+```
 sudo systemctl start mongod
 ```
-- Windows
+#### Windows
 
+- Ouvrir PowerShell en administrateur
+
+- Vérifier l'état du service
 ```
-# Ouvrir PowerShell en administrateur
-
-# Vérifier l'état du service
 Get-Service -Name MongoDB
-
-# Stopper MongoDB
+```
+- Stopper MongoDB
+```
 Stop-Service -Name MongoDB
-
-# Pour redémarrer après Docker
+```
+- Pour redémarrer après Docker
+```
 Start-Service -Name MongoDB
 ```
 
-- Mac
+#### Mac
 
+-  Vérifier l'état
 ```
-# Vérifier l'état
 brew services list
-
-# Stopper MongoDB
+```
+- Stopper MongoDB
+```
 brew services stop mongodb-community
-
-# Pour redémarrer après Docker
+```
+- Pour redémarrer après Docker
+```
 brew services start mongodb-community
 ```
 
 
-Construire et lancer les conteneurs :
+- Construire et lancer les conteneurs :
 
 ```
 docker compose --env-file .env up --build
 ```
 Les conteneurs suivants seront créés :  
 
-- mongo_db : serveur MongoDB accessible sur le port 27017
+  - mongo_db : serveur MongoDB accessible sur le port 27017
 
-- healthcare_app : application Python exécutant automatiquement main.py
+  - healthcare_app : application Python exécutant automatiquement main.py
 
-## Étape 7 : Connexion à MongoDB
+## Étape 8 : Connexion à MongoDB
 Depuis un autre terminal terminal :
 
 ```
@@ -194,7 +200,21 @@ use healthcare_data
 db.patients.find().limit(5).pretty()
 ```
 
+### Accès aux fichiers CSV générés
 
+Les fichiers produits automatiquement sont enregistrés dans le dossier data/ :  
+
+grouped_duplicates.csv	Contient les doublons détectés (l’original + les copies)  
+healthcare_dataset_clean.csv	Données nettoyées, prêtes pour MongoDB  
+
+Grâce au volume Docker :
+```
+- ./data:/app/data  
+```
+### Pour tout nettoyer et repartir de zéro :
+```
+docker compose down -v  
+```
 ### Ce qui se passe pendant la migration
 
 Le script main.py orchestre les différentes étapes de la migration :
@@ -264,12 +284,6 @@ Ils couvrent :
 Le nettoyage et la préparation des données (clean_csv.py) ;  
 
 L’insertion dans MongoDB (transfer_mongodb.py).  
-
-- Organisation des tests
-app/
-└── tests/
-    ├── test_clean_csv.py
-    └── test_transfer_mongodb.py
 
 -  Lancer les tests avec pytest
 
