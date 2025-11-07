@@ -11,7 +11,7 @@ def main():
     """
     input_csv = "healthcare_dataset.csv"
     
-    output_path_clean = "csv_output/healthcare_dataset_clean.csv"
+    output_csv = "csv_output/healthcare_dataset_clean.csv"
 
 
     # Nettoyage du CSV et récupération du DataFrame nettoyé
