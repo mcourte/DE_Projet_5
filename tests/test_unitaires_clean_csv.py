@@ -3,7 +3,7 @@ sys.path.append(os.path.dirname(os.path.dirname(__file__)))
 
 import pytest
 import pandas as pd
-from clean_csv import  standardize_column_names, clean_names, clean_insurance_billing, remove_duplicates, check_empty_rows, check_missing_values
+from app/clean_csv import  standardize_column_names, clean_names, clean_insurance_billing, remove_duplicates, check_empty_rows, check_missing_values
 
 @pytest.fixture
 def df_raw():
