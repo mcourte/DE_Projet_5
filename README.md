@@ -289,7 +289,9 @@ L’insertion dans MongoDB (transfer_mongodb.py).
 
 Depuis la racine du projet :  
 
-```pytest app/tests -v```
+```
+pytest -v tests/test_unitaires_clean_csv.py tests/tests_unitaires_transfer_mongodb.py
+```
 
 **Exemples de vérifications**
 
