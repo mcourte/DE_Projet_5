@@ -1,17 +1,17 @@
 import sys
 import os
-import pandas as pd
 import pytest
-from unittest.mock import patch, MagicMock
+import pandas as pd
+from unittest.mock import MagicMock
 
 sys.path.append(os.path.abspath(os.path.join(os.path.dirname(__file__), "..")))
 
-from app.transfer_mongodb import insert_records
+from app.transfer_mongodb import format_patient_record, insert_records_to_mongo
 
 
 @pytest.fixture
 def df_sample():
-    """Crée un petit DataFrame de test"""
+    """Crée un DataFrame minimal pour le test MongoDB"""
     return pd.DataFrame([
         {
             "name": "Alice Smith",
@@ -28,18 +28,28 @@ def df_sample():
             "billing_amount": 1500.0,
             "insurance_provider": "Blue Cross",
             "medication": "None",
-            "test_results": "Normal",
+            "test_results": "Normal"
         }
     ])
 
 
-@patch("app.transfer_mongodb.MongoClient")
-def test_insert_records(mock_mongo, df_sample):
-    """Teste l'insertion de documents dans MongoDB avec mock"""
+def test_format_patient_record(df_sample):
+    """Teste la transformation d'une ligne en document MongoDB"""
+    row = df_sample.iloc[0]
+    record = format_patient_record(row)
+    assert "patient" in record
+    assert "hospitalizations" in record["patient"]
+    assert record["patient"]["name"] == "Alice Smith"
+
+
+def test_insert_records_to_mongo(df_sample):
+    """Teste l'insertion dans MongoDB via un mock"""
     mock_collection = MagicMock()
-    mock_mongo.return_value.__getitem__.return_value.__getitem__.return_value = mock_collection
+    insert_records_to_mongo(df_sample, mock_collection)
 
-    inserted_count = insert_records(df_sample, "mongodb://fake_uri", "healthcare_data", "patients")
-
+    # Vérifie que insert_many a bien été appelé une fois
     mock_collection.insert_many.assert_called_once()
-    assert inserted_count == 1
+
+    # Vérifie que le bon nombre de documents a été transmis
+    args, kwargs = mock_collection.insert_many.call_args
+    assert len(args[0]) == len(df_sample)
