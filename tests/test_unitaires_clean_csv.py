@@ -10,6 +10,8 @@ from app.clean_csv import (
     check_empty_rows,
     check_missing_values,
 )
+import sys, os
+sys.path.append(os.path.abspath(os.path.join(os.path.dirname(__file__), '..')))
 
 # === FIXTURE ===
 @pytest.fixture
