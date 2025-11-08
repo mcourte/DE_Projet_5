@@ -1,13 +1,20 @@
-import sys, os
-sys.path.append(os.path.dirname(os.path.dirname(__file__)))
-
 import pytest
 import pandas as pd
-from app.clean_csv import  standardize_column_names, clean_names, clean_insurance_billing, remove_duplicates, check_empty_rows, check_missing_values
+import os
 
+from app.clean_csv import (
+    standardize_column_names,
+    clean_names,
+    clean_insurance_billing,
+    remove_duplicates,
+    check_empty_rows,
+    check_missing_values,
+)
+
+# === FIXTURE ===
 @pytest.fixture
 def df_raw():
-    """Crée un DataFrame simulé représentant les données brutes avant migration"""
+    """Crée un DataFrame simulé représentant les données brutes avant migration."""
     return pd.DataFrame([
         {
             "Name": "Alice Smith",
@@ -27,7 +34,8 @@ def df_raw():
             "Test Results": "Normal"
         },
         {
-            "Name": "Alice Smith",  # doublon exact
+            # Doublon exact
+            "Name": "Alice Smith",
             "Age": 30,
             "Gender": "Female",
             "Blood Type": "A+",
@@ -45,53 +53,73 @@ def df_raw():
         }
     ])
 
+# === TEST 1 : structure de colonnes ===
 def test_columns_integrity_before_cleaning(df_raw):
-    """Vérifie la présence des colonnes attendues avant nettoyage"""
+    """Vérifie la présence des colonnes attendues avant nettoyage."""
     expected_columns = [
         "Name","Age","Gender","Blood Type","Medical Condition",
         "Date of Admission","Admission Type","Discharge Date","Room Number",
         "Doctor","Hospital","Billing Amount","Insurance Provider",
         "Medication","Test Results"
     ]
-    assert list(df_raw.columns) == expected_columns
+    assert list(df_raw.columns) == expected_columns, "Les colonnes initiales ne correspondent pas aux attentes."
 
+
+# === TEST 2 : détection de doublons ===
 def test_duplicates_detection(df_raw):
-    """Vérifie la présence de doublons exacts avant nettoyage"""
+    """Vérifie la présence de doublons exacts avant nettoyage."""
     duplicates = df_raw.duplicated(keep=False)
-    assert duplicates.sum() == 2
+    assert duplicates.sum() == 2, "Le DataFrame de test devrait contenir exactement un doublon complet."
 
+
+# === TEST 3 : pipeline complet ===
 def test_cleaning_pipeline(df_raw):
     """
     Teste le pipeline complet de nettoyage :
+    - Standardisation des colonnes
+    - Nettoyage des noms et montants
+    - Suppression des doublons
+    - Vérification des valeurs manquantes
     """
     df = df_raw.copy()
 
-    # Applique le pipeline
+    # Création du dossier csv_output si nécessaire (utile si tests lancés seuls)
+    os.makedirs("csv_output", exist_ok=True)
+
+    # Applique le pipeline complet
     df = standardize_column_names(df)
     df = clean_names(df)
     df = clean_insurance_billing(df)
     df = remove_duplicates(df)
     df = check_empty_rows(df)
 
-    # Vérifie la présence de valeurs manquantes et lève une erreur si nécessaire
+    # Vérifie la présence de valeurs manquantes
     missing_total = df.isna().sum().sum()
     if missing_total > 0:
-        check_missing_values(df)  # permet d'afficher le détail dans le test
-        assert missing_total == 0, f"{missing_total} valeurs manquantes détectées après nettoyage"
+        check_missing_values(df)
+        assert missing_total == 0, f"{missing_total} valeurs manquantes détectées après nettoyage."
 
-    # Vérifie que les colonnes sont correctement standardisées
+    # Vérifie les colonnes finales standardisées
     expected_columns = [
         "name","age","gender","blood_type","medical_condition",
         "date_of_admission","admission_type","discharge_date","room_number",
         "doctor","hospital","billing_amount","insurance_provider",
         "medication","test_results"
     ]
-    assert list(df.columns) == expected_columns, "Les colonnes ne sont pas correctement standardisées"
+    assert list(df.columns) == expected_columns, "Les colonnes ne sont pas correctement standardisées."
 
-    # Vérifie que tous les doublons complets ont été supprimés
+    # Vérifie qu'il ne reste plus de doublons
     duplicates_mask = df.duplicated(keep=False)
-    assert duplicates_mask.sum() == 0, f"{duplicates_mask.sum()} doublons complets détectés après nettoyage"
+    assert duplicates_mask.sum() == 0, f"{duplicates_mask.sum()} doublons complets détectés après nettoyage."
 
-    # Vérifie qu’il n’y a pas de lignes entièrement vides
+    # Vérifie qu’aucune ligne n’est entièrement vide
     empty_rows_count = df.isnull().all(axis=1).sum()
-    assert empty_rows_count == 0, f"{empty_rows_count} lignes vides détectées après nettoyage"
+    assert empty_rows_count == 0, f"{empty_rows_count} lignes vides détectées après nettoyage."
+
+    # Vérifie que le fichier CSV de doublons a bien été créé
+    output_path = "csv_output/grouped_duplicates.csv"
+    assert os.path.exists(output_path), "Le fichier grouped_duplicates.csv n’a pas été créé."
+
+    # Vérifie qu’il contient les données dupliquées (original + copie)
+    grouped_df = pd.read_csv(output_path)
+    assert len(grouped_df) == 2, "Le fichier grouped_duplicates.csv devrait contenir les doublons originaux + copies."
